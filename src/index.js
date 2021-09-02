@@ -2,6 +2,11 @@ import './sass/main.scss';
 import fetchCountries from '../src/fetchCountries'
 import markupCountry from './tamplates/country.hbs'
 import markupCountriesList from './tamplates/countries-list.hbs'
+import { alert, notice, info, success, error, defaults } from '@pnotify/core/dist/PNotify.js';
+import '@pnotify/core/dist/PNotify.css';
+import '@pnotify/core/dist/BrightTheme.css';
+
+
 
 
 const inputRef = document.querySelector('#search')
@@ -9,8 +14,8 @@ const rootRef = document.querySelector('#root')
 const countryRef = document.querySelector('#country')
 const inputValue = inputRef.value
 
-
-console.log(inputRef.value)
+// defaults.delay = 2500;
+const debounce = require('lodash.debounce');
 
 function hendlerSearch(e) {
     e.preventDefault()
@@ -20,58 +25,45 @@ function hendlerSearch(e) {
             if (data.length === 1) {
                 clearMarkup()
                 crateSearchedCountryMarkup(data)
+                success({
+                    text: 'Найдена страна!'
+                });
             }
             else if (data.length > 1 && data.length < 10) {
-                
-                console.log(data)
-                // clearMarkup()
+                clearMarkup()
                 createCountriesList(data)
+            }
+            else if (data.length >= 10) {
+                clearMarkup()
+                error({
+                    text: 'Слишком много совпадений.'
+                });
             }
         })
         .catch(err => {
-            // clearMarkup()
-            console.log(err)
+            clearMarkup()
+            error({
+                    text: 'Страна не найдена :('
+                });
+
         })
 }
+
+
 function createCountriesList(obj) {
     const markup = obj.map(markupCountriesList).join('')
-    // root.innerHTML = createCountriesList(obj);
-    root.insertAdjacentHTML('beforeend', markup)
+    country.insertAdjacentHTML('afterbegin', markup)
 }
+
 function crateSearchedCountryMarkup(obj) {
     const markup = obj.map(markupCountry).join('')
     country.insertAdjacentHTML('beforeend', markup)
-   
-    // console.log(obj)
-    
 }
-
 
 function clearMarkup() {
     const markup = ''
     country.innerHTML = ""
 }
 
+inputRef.addEventListener('input', debounce(hendlerSearch, 500) )
 
-inputRef.addEventListener('input', hendlerSearch)
-
-// const url = `https://pixabay.com/api/?key=5018958-ed49ccd90878e6614abdf24a6`;
-
-
-
-// <div class="searched-country">
-//     <h2 class="searched-country__name">{{this.name}}</h2>
-//     <div class="searched-country__stats">
-//         <p class="searched-country__catipal">Capital: {{this.capital}}</p>
-//         <p class="searched-country__population">Population: {{this.population}}</p>
-//         <ul class="searched-country__languages-list">Languages: 
-//             {{#each this.languages}}
-//             <li>{{this.name}}</li>
-//             {{/each}}
-//         </ul>
-       
-//     </div>
-//     <div class="searched-country__img">
-//         <img src="{{this.flag}}" alt="{{this.name}}">
-//     </div>
-// </div>
