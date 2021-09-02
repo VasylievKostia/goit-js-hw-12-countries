@@ -27,16 +27,16 @@ function hendlerSearch(e) {
                 // clearMarkup()
                 createCountriesList(data)
             }
-            
-
         })
         .catch(err => {
             // clearMarkup()
             console.log(err)
-        } 
-        )
-    // crateSearchedCountryMarkup()
-
+        })
+}
+function createCountriesList(obj) {
+    const markup = obj.map(markupCountriesList).join('')
+    // root.innerHTML = createCountriesList(obj);
+    root.insertAdjacentHTML('beforeend', markup)
 }
 function crateSearchedCountryMarkup(obj) {
     const markup = obj.map(markupCountry).join('')
@@ -45,11 +45,7 @@ function crateSearchedCountryMarkup(obj) {
     // console.log(obj)
     
 }
-function createCountriesList(obj) {
-    const markup = obj.map(markupCountriesList).join('')
-    // root.innerHTML = createCountriesList(obj);
-    root.insertAdjacentHTML('beforeend', markup)
-}
+
 
 function clearMarkup() {
     const markup = ''
